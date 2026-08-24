@@ -31,3 +31,23 @@ describe("support decision guardrails", () => {
     expect(buildLocalReply("火星上的帳號顏色怎麼改", state)).toContain("請問你遇到的是帳號");
   });
 });
+
+  it("switches from payment to page-blocked intent without repeating payment", () => {
+    const payment = analyzeMessage("我的信用卡付款失敗", [], {});
+    const page = analyzeMessage("我的粉絲團被封鎖了", [{ role: "customer", content: "我的信用卡付款失敗", time: "" }, { role: "assistant", content: "請提供 Ad Account ID", time: "" }], { ...payment.collectedFields, F01: "act_1234", F11: "末四碼 1234" });
+    expect(page.matchedKb?.["KB ID"]).toBe("A01");
+    expect(page.matchedKb?.["Source Title"]).toBe("Meta Business Help Center");
+    expect(page.matchedKb?.["Source URL"]).toContain("facebook.com/business/help");
+    expect(page.matchedKb?.["Intent"]).toBe("Ad Account Disabled");
+    expect(page.category).not.toContain("付款");
+    expect(page.intent).not.toBe("Payment Failed");
+    expect(page.confidence).toBeGreaterThan(0.55);
+    expect(page.missingFields).not.toContain("F11");
+    expect(page.missingFields).toContain("F16");
+    expect(buildLocalReply("我的粉絲團被封鎖了", page)).toContain("限制或停用訊息");
+    expect(page.ruleFlags.ruleConflict).toBe(false);
+    expect(page.handoffReason).toContain("個案查核");
+    expect(page.resolutionType).toBe("NEED_TICKET");
+    expect(page.summary).toContain("粉絲團被封鎖");
+    expect(page.summary).not.toContain("信用卡付款失敗");
+  });

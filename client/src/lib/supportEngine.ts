@@ -22,9 +22,13 @@ const rules = workbook.decisionRules as KnowledgeItem[];
 
 const normalize = (value: string) => value.toLowerCase().replace(/[，。！？、,.!?；;:：]/g, " ");
 const tokens = (value: string) => Array.from(normalize(value).matchAll(/[A-Za-z0-9]+|[\u4e00-\u9fff]{2}/g)).map((match) => match[0]);
+const topicFamily = (value: string) => /(付款|扣款|信用卡|欠款)/.test(value) ? "payment" : /(粉絲團|粉專|粉絲頁|封鎖|Page)/i.test(value) ? "page" : /(廣告|Campaign|Ad Account|投放)/i.test(value) ? "ads" : /(登入|帳號)/i.test(value) ? "account" : "other";
+const sharedFieldIds = new Set(["F01", "F02", "F06", "F07"]);
+const keepSharedFields = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([id]) => sharedFieldIds.has(id)));
 
 export function retrieveKnowledge(query: string, history: ConversationMessage[] = [], sourceKb: KnowledgeItem[] = kb) {
-  const corpus = [query, ...history.slice(-4).map((m) => m.content)].join(" ");
+  const newTopicSignal = /(付款|扣款|信用卡|粉絲團|粉專|粉絲頁|封鎖|停用|限制|廣告|登入|發票|帳號|連不起來|找不到)/.test(query);
+  const corpus = newTopicSignal ? query : [query, ...history.slice(-2).map((m) => m.content)].join(" ");
   const queryTokens = tokens(corpus);
   return sourceKb
     .map((item) => {
@@ -32,7 +36,8 @@ export function retrieveKnowledge(query: string, history: ConversationMessage[] 
       const phrase = normalize(String(item["Customer Examples"] ?? ""));
       const exactPhraseBonus = phrase && normalize(corpus).includes(phrase) ? 8 : 0;
       const intentBoost = (["新增", "付款", "扣款", "停用", "限制", "無法發布", "付款失敗", "欠款"] as string[]).reduce((total, keyword) => total + (normalize(corpus).includes(keyword) && text.includes(keyword) ? 3 : 0), 0);
-      const score = exactPhraseBonus + intentBoost + queryTokens.reduce((total, token) => total + (text.includes(token) ? (token.length > 2 ? 2 : 1) : 0), 0);
+      const pageRestrictionBoost = /(粉絲團|粉專|粉絲頁|封鎖)/.test(corpus) && /(page|disabled|restriction|停用|限制)/i.test(text) ? 6 : 0;
+      const score = exactPhraseBonus + intentBoost + pageRestrictionBoost + queryTokens.reduce((total, token) => total + (text.includes(token) ? (token.length > 2 ? 2 : 1) : 0), 0);
       return { item, score };
     })
     .sort((a, b) => b.score - a.score)
@@ -70,7 +75,10 @@ export function analyzeMessage(text: string, history: ConversationMessage[], cur
   const best = results[0];
   const score = best?.score ?? 0;
   const confidence = Math.min(0.98, Math.max(0.32, 0.42 + score * 0.09));
-  const collectedFields = extractFields(text, currentFields);
+  const previousCustomer = [...history].reverse().find((message) => message.role === "customer")?.content ?? "";
+  const changedTopic = history.length > 0 && topicFamily(text) !== "other" && topicFamily(previousCustomer) !== "other" && topicFamily(text) !== topicFamily(previousCustomer);
+  const effectiveFields = changedTopic ? keepSharedFields(currentFields) : currentFields;
+  const collectedFields = extractFields(text, effectiveFields);
   const item = score >= 5 && confidence >= 0.55 ? best?.item : undefined;
   const missingFields = item ? requiredIds(item).filter((id) => !collectedFields[id]) : [];
   const resolutionType = String(item?.["Resolution Type"] ?? "");
@@ -79,7 +87,8 @@ export function analyzeMessage(text: string, history: ConversationMessage[], cur
   const ruleConflict = resolutionType === "DIRECT_ANSWER" && missingFields.length > 0;
   const needsHuman = confidence < 0.8 || resolutionType === "NEED_TICKET" || missingFields.length > 0 || customerRequestedHuman || privacyRisk || ruleConflict;
   const handoffReason = customerRequestedHuman ? "客戶要求人工協助" : privacyRisk ? "偵測到付款隱私風險，禁止收集敏感資料" : ruleConflict ? "回答路由與欄位規則衝突" : confidence < 0.8 ? "信心低於 0.80，避免強行匹配" : resolutionType === "NEED_TICKET" ? "此類問題需個案查核" : missingFields.length > 0 ? "仍有必要欄位缺漏" : "客戶要求人工協助";
-  const summary = [...history.slice(-5), { role: "customer", content: text, time: "" }]
+  const summaryHistory = changedTopic ? [] : history.slice(-5);
+  const summary = [...summaryHistory, { role: "customer", content: text, time: "" }]
     .map((m) => `${m.role === "customer" ? "客戶" : "客服"}：${m.content}`)
     .join("｜");
   return {
