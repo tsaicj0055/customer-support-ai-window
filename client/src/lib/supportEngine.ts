@@ -22,13 +22,14 @@ const rules = workbook.decisionRules as KnowledgeItem[];
 
 const normalize = (value: string) => value.toLowerCase().replace(/[，。！？、,.!?；;:：]/g, " ");
 const tokens = (value: string) => Array.from(normalize(value).matchAll(/[A-Za-z0-9]+|[\u4e00-\u9fff]{2}/g)).map((match) => match[0]);
-const topicFamily = (value: string) => /(付款|扣款|信用卡|欠款)/.test(value) ? "payment" : /(粉絲團|粉專|粉絲頁|封鎖|Page)/i.test(value) ? "page" : /(廣告|Campaign|Ad Account|投放)/i.test(value) ? "ads" : /(登入|帳號)/i.test(value) ? "account" : "other";
+const topicFamily = (value: string) => /(付款|扣款|信用卡|欠款)/.test(value) ? "payment" : /(粉絲團|粉專|粉絲頁|封鎖|Page)/i.test(value) ? "page" : /(藍色徽章|blue\s*badge|Meta\s*Verified|企業驗證|驗證徽章)/i.test(value) ? "verification" : /(廣告|Campaign|Ad Account|投放)/i.test(value) ? "ads" : /(登入|帳號)/i.test(value) ? "account" : "other";
 const sharedFieldIds = new Set(["F01", "F02", "F06", "F07"]);
 const keepSharedFields = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([id]) => sharedFieldIds.has(id)));
 
 export function retrieveKnowledge(query: string, history: ConversationMessage[] = [], sourceKb: KnowledgeItem[] = kb) {
-  const newTopicSignal = /(付款|扣款|信用卡|粉絲團|粉專|粉絲頁|封鎖|停用|限制|廣告|登入|發票|帳號|連不起來|找不到)/.test(query);
-  const corpus = newTopicSignal ? query : [query, ...history.slice(-2).map((m) => m.content)].join(" ");
+  const newTopicSignal = /(付款|扣款|信用卡|粉絲團|粉專|粉絲頁|封鎖|停用|限制|藍色徽章|blue\s*badge|Meta\s*Verified|企業驗證|廣告|登入|發票|帳號|連不起來|找不到)/i.test(query);
+  const customerHistory = history.filter((message) => message.role === "customer");
+  const corpus = newTopicSignal ? query : [query, ...customerHistory.slice(-2).map((m) => m.content)].join(" ");
   const queryTokens = tokens(corpus);
   return sourceKb
     .map((item) => {

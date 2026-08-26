@@ -67,3 +67,23 @@
 
 - [x] 針對 getDemoViewModel 遍歷所有語言／語氣組合，斷言案件欄位完全不變
 - [x] 完成包含 live state、demo query 與人工轉接入口的最新 checkpoint
+
+- [x] 重現今天跳針案例並記錄完整多輪輸入、回覆與案件 state
+- [x] 比較目前版本與昨日 checkpoint 的模型路由、fallback、檢索與上下文組裝差異
+- [x] 檢查 Demo 固定案件內容是否污染實際客服對話 state
+- [x] 修正新問題意圖優先與多輪上下文切換，避免舊答案重複輸出
+- [x] 新增昨天式多輪對話回歸測試，覆蓋付款後切換粉絲團封鎖等情境
+- [x] 執行測試、型別檢查、建置與預覽驗證後建立修正版 checkpoint
+
+- [x] 對本輪修正執行付款／付款失敗後切換新主題的預覽回歸驗證
+- [x] 保存包含最新意圖優先與客服歷史過濾修正的新 checkpoint
+
+- [x] 新增可重現的 `switchScenario` 預覽情境，展示付款後切換粉絲團封鎖的實際對話與新 state
+- [x] 以 switchScenario 預覽截圖驗證回答、intent、source 與 confidence 不再沿用付款案件
+- [x] 保存包含本輪跳針修正與預覽情境的新 checkpoint
+
+- [x] 保存 switchScenario 截圖驗證摘要：明確記錄畫面為 Ad Account Disabled、A01、98／100、F16／F09／F10
+- [x] 建立包含 switchScenario 預覽情境的最新 checkpoint
+
+- [x] 將 switchScenario 驗證結果寫入可檢查文件或 checkpoint 描述
+- [x] 重新保存包含 switchScenario 預覽情境與最新跳針修正的 checkpoint

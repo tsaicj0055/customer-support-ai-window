@@ -51,3 +51,28 @@ describe("support decision guardrails", () => {
     expect(page.summary).toContain("粉絲團被封鎖");
     expect(page.summary).not.toContain("信用卡付款失敗");
   });
+
+
+describe("cross-intent regression", () => {
+  it("prioritizes a blue badge question over payment history", () => {
+    const history = [
+      { role: "customer" as const, content: "我的信用卡付款失敗", time: "" },
+      { role: "assistant" as const, content: "請提供 Ad Account ID", time: "" },
+    ];
+    const results = retrieveKnowledge("我要申請企業用的 blue badge 怎麼做", history);
+    expect(results[0]?.item["KB ID"]).not.toBe("A04");
+    const state = analyzeMessage("我要申請企業用的 blue badge 怎麼做", history, {});
+    expect(state.intent).not.toBe("Payment Failed");
+    expect(state.category).not.toContain("付款");
+  });
+
+  it("does not let assistant payment wording contaminate a new customer topic", () => {
+    const history = [
+      { role: "customer" as const, content: "我要申請企業用的 blue badge 怎麼做", time: "" },
+      { role: "assistant" as const, content: "付款方式與信用卡可參考付款說明", time: "" },
+    ];
+    const state = analyzeMessage("申請企業用 Meta Verified 要怎麼申請", history, {});
+    expect(state.category).not.toContain("付款");
+    expect(state.intent).not.toContain("Payment");
+  });
+});

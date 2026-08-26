@@ -16,11 +16,19 @@ const seedMessages: ConversationMessage[] = [{ role: "assistant", content: "您�
 const scenarios = (workbook.prototypeScenarios as KnowledgeItem[]).slice(0, 3);
 
 export default function Home() {
-  const [messages, setMessages] = useState<ConversationMessage[]>(seedMessages);
+  const switchScenario = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("switchScenario");
+  const scenarioHistory: ConversationMessage[] = [
+    ...seedMessages,
+    { role: "customer", content: "我的信用卡付款失敗", time: "11:44" },
+    { role: "assistant", content: "請提供 Ad Account ID 以便查核。", time: "11:44" },
+    { role: "customer", content: "我的粉絲團被封鎖了，請問要怎麼辦？", time: "11:45" },
+  ];
+  const scenarioFields = { F01: "act_1234", F11: "末四碼 1234" };
+  const [messages, setMessages] = useState<ConversationMessage[]>(switchScenario ? scenarioHistory : seedMessages);
   const [draft, setDraft] = useState("");
-  const [fields, setFields] = useState<Record<string, string>>({});
+  const [fields, setFields] = useState<Record<string, string>>(switchScenario ? scenarioFields : {});
   const [activeKb, setActiveKb] = useState<KnowledgeItem[]>(getKnowledgeBase());
-  const [state, setState] = useState<SupportState>(() => analyzeMessage("", [], {}, getKnowledgeBase()));
+  const [state, setState] = useState<SupportState>(() => switchScenario ? analyzeMessage("我的粉絲團被封鎖了，請問要怎麼辦？", scenarioHistory, scenarioFields, getKnowledgeBase()) : analyzeMessage("", [], {}, getKnowledgeBase()));
   const [ticketOpen, setTicketOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [demoOpen, setDemoOpen] = useState(() => new URLSearchParams(window.location.search).has("demo"));
