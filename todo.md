@@ -87,3 +87,27 @@
 
 - [x] 將 switchScenario 驗證結果寫入可檢查文件或 checkpoint 描述
 - [x] 重新保存包含 switchScenario 預覽情境與最新跳針修正的 checkpoint
+
+- [x] 定義平均首次回應時間、人工轉接率與案件解決率的計算公式與資料欄位
+- [x] 建立可重算的 KPI 指標模組，區分展示資料與正式持久化資料
+- [x] 在儀表板加入三項 KPI 卡片、趨勢／狀態說明與案件樣本摘要
+- [x] 讓管理者可切換今日、近 7 日與目前案件範圍
+- [x] 補寫 KPI 計算與邊界條件的 Vitest 測試
+- [x] 驗證儀表板桌面／手機版版面、測試與正式建置
+- [x] 建立 KPI 儀表板 checkpoint
+
+- [x] 支援以 `?dashboard=1` 直接開啟客服營運儀表板
+- [x] 擷取桌面與手機版 KPI 儀表板畫面並驗證三項指標可讀性
+
+- [x] 補上 KPI 趨勢資訊與案件樣本摘要區塊，並加入對應測試
+- [x] 將目前案件範圍改為讀取客服對話的實際 state
+- [x] 寫入桌面／手機版 KPI 儀表板視覺驗證紀錄
+- [x] 保存 KPI 儀表板修改後的新 checkpoint
+
+- [x] 補測 rateDelta／secondsDelta 趨勢計算與 current live state 的 handoff／resolution 摘要
+- [x] 保存明確包含 KPI 儀表板、趨勢、案件摘要、dashboard query 與驗證文件的新 checkpoint
+
+- [x] 抽出 current KPI case mapping 函式，直接測試 needsHuman／resolutionType 到 handoff／resolved 的映射
+- [x] 保存包含完整 KPI 儀表板與 current mapping 測試的新 checkpoint
+
+- [ ] 保存新的 checkpoint，明確包含 KPI 儀表板、dashboard query、趨勢、案件摘要、toCurrentCaseMetric 與驗證文件
