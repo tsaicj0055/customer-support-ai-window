@@ -66,4 +66,4 @@
 - [x] 保存本次 demo 修正版 checkpoint
 
 - [x] 針對 getDemoViewModel 遍歷所有語言／語氣組合，斷言案件欄位完全不變
-- [ ] 完成包含 live state、demo query 與人工轉接入口的最新 checkpoint
+- [x] 完成包含 live state、demo query 與人工轉接入口的最新 checkpoint
