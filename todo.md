@@ -160,4 +160,38 @@
 - [x] 若無法在測試環境執行真 DB，抽出 service／pure function 或 mock caller 驗證 API 契約
 - [x] 保存明確包含真人客服回覆、來源通路、deterministic guardrail、KPI 權限／空資料提示的新 checkpoint
 
-- [ ] 保存新的 checkpoint，明確包含真人客服回覆、來源通路選擇、deterministic guardrail、KPI 權限／空資料提示與最新 API contract 測試
+- [x] 保存新的 checkpoint，明確包含真人客服回覆、來源通路選擇、deterministic guardrail、KPI 權限／空資料提示與最新 API contract 測試
+
+- [x] 確認目前專案擁有者帳號與 users.role
+- [x] 將專案擁有者帳號設定為 admin
+- [x] 驗證管理者可使用工單、KPI 與帳號管理權限
+
+- [x] 實作管理者／客服人員帳號管理 API 與介面，支援帳號列表、角色切換與啟用／停用權限
+- [x] 新增 admin 帳號管理權限測試，覆蓋 admin 可存取、一般使用者被拒絕、角色更新成功與錯誤分支
+- [x] 以管理者身份預覽驗證工單、KPI 與帳號管理三者皆可開啟與操作
+- [ ] 保存包含帳號管理功能的新 checkpoint
+
+- [x] 讓 KPI 案件樣本摘要每筆都可點選，透過正式 ticketDetail／conversation 詳情查詢載入內容
+- [x] 建立儀表板案件詳細視窗，顯示客戶問題、完整對話、工單、來源、信心、Rules、欄位與事件
+- [x] 支援從案件詳細視窗進行真人客服回覆與工單狀態更新
+- [x] 加入案件詳細查詢的管理者權限、找不到案件與空資料處理
+- [x] 補寫案件詳情 API／互動測試並驗證桌面與手機版
+- [x] 保存可查看儀表板案件內容的新 checkpoint
+
+- [x] 新增 users.active 持久化欄位，支援管理者啟用／停用帳號
+- [x] 建立 admin 帳號列表與角色／狀態更新 API
+- [x] 在前端加入帳號管理介面，支援角色切換與啟用／停用
+- [x] 補寫帳號管理 API 權限與錯誤分支測試
+- [x] 完成案件詳情與帳號管理的桌面／手機版視覺驗證
+- [ ] 保存包含案件詳情與帳號管理的新 checkpoint
+
+- [x] 讓 KPI 案件樣本摘要帶出 conversation、ticket、通路與摘要欄位
+- [x] 新增 admin conversationDetail 查詢與案件完整內容 modal
+- [x] 從案件詳情導向既有工單中心，重用真人回覆與狀態更新流程
+- [x] 補上案件詳情查詢的 TypeScript 契約與空資料處理
+
+- [x] 以管理者身份實際預覽並截圖工單中心、KPI 儀表板與帳號管理 modal，記錄三者可開啟與操作
+- [x] 在案件詳細視窗補上 source、confidence、Rules 與欄位資訊；未持久化項目需明確標示
+- [x] 在案件詳細視窗內直接提供真人客服回覆與工單狀態更新控制
+- [x] 補寫 KPI 案件樣本點擊開啟詳情的互動測試，並補拍桌面／手機版案件詳細視窗畫面
+- [ ] 完成上述驗證後再建立並保存新的 checkpoint

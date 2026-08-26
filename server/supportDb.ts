@@ -32,6 +32,17 @@ export async function getConversation(publicId: string) {
   return rows[0];
 }
 
+export async function getConversationDetail(publicId: string) {
+  const db = await requireDb();
+  const conversation = (await db.select().from(supportConversations).where(eq(supportConversations.publicId, publicId)).limit(1))[0];
+  if (!conversation) return undefined;
+  const messages = await db.select().from(supportMessages).where(eq(supportMessages.conversationId, conversation.id)).orderBy(supportMessages.createdAt);
+  const tickets = await db.select().from(supportTickets).where(eq(supportTickets.conversationId, conversation.id)).orderBy(desc(supportTickets.createdAt));
+  const ticket = tickets[0];
+  const events = ticket ? await db.select().from(supportTicketEvents).where(eq(supportTicketEvents.ticketId, ticket.id)).orderBy(desc(supportTicketEvents.createdAt)) : [];
+  return { conversation, ticket, messages, events };
+}
+
 export async function saveConversationState(publicId: string, input: { intent?: string; summary?: string; status?: "open" | "pending" | "resolved" | "closed" }) {
   const db = await requireDb();
   await db.update(supportConversations).set({
@@ -150,8 +161,15 @@ export function aggregateKpiMetrics(period: "today" | "7d" | "current", conversa
     const customer = related.find((message) => message.role === "customer");
     const response = related.find((message) => (message.role === "assistant" || message.role === "agent") && (!customer || message.createdAt >= customer.createdAt));
     const ticket = ticketByConversation.get(conversation.id);
-    return {
+      return {
       id: conversation.publicId,
+      conversationPublicId: conversation.publicId,
+      ticketNo: ticket?.ticketNo ?? null,
+      channel: conversation.channel,
+      intent: conversation.intent,
+      summary: ticket?.summary ?? conversation.summary,
+      reason: ticket?.reason ?? null,
+      missingFields: ticket?.missingFields ? JSON.parse(ticket.missingFields) : [],
       firstResponseSeconds: customer && response ? Math.max(0, Math.round((response.createdAt.getTime() - customer.createdAt.getTime()) / 1000)) : null,
       handedOff: Boolean(ticket),
       resolved: conversation.status === "resolved" || conversation.status === "closed" || ticket?.status === "resolved" || ticket?.status === "closed",

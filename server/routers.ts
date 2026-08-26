@@ -4,7 +4,8 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router } from "./_core/trpc";
 import { supportReply } from "./support";
-import { addAgentReply, createConversation, createTicket, getKpiMetrics, getTicket, listTickets, recordMessage, updateTicketStatus } from "./supportDb";
+import { listSupportUsers, updateSupportUser } from "./accountDb";
+import { addAgentReply, createConversation, createTicket, getConversationDetail, getKpiMetrics, getTicket, listTickets, recordMessage, updateTicketStatus } from "./supportDb";
 
 export const appRouter = router({
   system: systemRouter,
@@ -23,9 +24,12 @@ export const appRouter = router({
     createTicket: publicProcedure.input(z.object({ conversationPublicId: z.string().min(1), reason: z.string().min(1).max(255), summary: z.string().min(1), missingFields: z.array(z.string()).max(20).optional() })).mutation(({ input, ctx }) => createTicket({ ...input, createdBy: ctx.user?.id })),
     ticketList: adminProcedure.input(z.object({ limit: z.number().int().min(1).max(100).optional() }).optional()).query(({ input }) => listTickets(input?.limit)),
     ticketDetail: adminProcedure.input(z.object({ ticketNo: z.string().min(1) })).query(({ input }) => getTicket(input.ticketNo)),
+    conversationDetail: adminProcedure.input(z.object({ conversationPublicId: z.string().min(1) })).query(({ input }) => getConversationDetail(input.conversationPublicId)),
     updateTicketStatus: adminProcedure.input(z.object({ ticketNo: z.string().min(1), status: z.enum(["open", "in_progress", "resolved", "closed"]), note: z.string().max(500).optional() })).mutation(({ input, ctx }) => updateTicketStatus({ ...input, actorUserId: ctx.user.id })),
     agentReply: adminProcedure.input(z.object({ ticketNo: z.string().min(1), content: z.string().min(1).max(10000) })).mutation(({ input, ctx }) => addAgentReply({ ...input, actorUserId: ctx.user.id })),
     kpi: adminProcedure.input(z.object({ period: z.enum(["today", "7d", "current"]), conversationPublicId: z.string().optional() })).query(({ input }) => getKpiMetrics(input.period, input.conversationPublicId)),
+    userList: adminProcedure.query(() => listSupportUsers()),
+    updateUser: adminProcedure.input(z.object({ targetUserId: z.number().int().positive(), role: z.enum(["user", "admin"]).optional(), active: z.boolean().optional() })).mutation(({ input, ctx }) => updateSupportUser({ ...input, actorUserId: ctx.user.id })),
   }),
 });
 

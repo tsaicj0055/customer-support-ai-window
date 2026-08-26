@@ -2,10 +2,18 @@ export type MetricPeriod = "today" | "7d" | "current";
 
 export type SupportCaseMetric = {
   id: string;
+  conversationPublicId?: string;
+  ticketNo?: string | null;
+  channel?: string | null;
+  intent?: string | null;
+  summary?: string | null;
+  reason?: string | null;
+  missingFields?: string[];
   createdAt: string;
   firstResponseSeconds: number | null;
   handedOff: boolean;
   resolved: boolean;
+  status?: string;
 };
 
 export type KpiMetrics = {
@@ -16,6 +24,7 @@ export type KpiMetrics = {
   respondedCases: number;
   handoffCases: number;
   resolvedCases: number;
+  cases: SupportCaseMetric[];
 };
 
 export const demoPreviousKpis: KpiMetrics = {
@@ -26,6 +35,7 @@ export const demoPreviousKpis: KpiMetrics = {
   respondedCases: 0,
   handoffCases: 0,
   resolvedCases: 0,
+  cases: [],
 };
 
 export const demoCaseMetrics: SupportCaseMetric[] = [
@@ -78,6 +88,7 @@ export function calculateKpis(cases: SupportCaseMetric[]): KpiMetrics {
     respondedCases: responded.length,
     handoffCases: handoffs.length,
     resolvedCases: resolved.length,
+    cases,
   };
 }
 

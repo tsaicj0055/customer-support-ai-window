@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   getKpiMetrics: vi.fn(async (period: string) => ({ period, totalCases: 2, respondedCases: 2, averageFirstResponseSeconds: 18, handoffCases: 1, handoffRate: 0.5, resolvedCases: 1, resolutionRate: 0.5, cases: [] })),
   listTickets: vi.fn(async () => []),
   getTicket: vi.fn(async () => undefined),
+  getConversationDetail: vi.fn(async (conversationPublicId: string) => conversationPublicId === "missing" ? undefined : ({ conversation: { publicId: conversationPublicId }, ticket: undefined, messages: [], events: [] })),
   recordMessage: vi.fn(async (input: { conversationPublicId: string }) => ({ conversationPublicId: input.conversationPublicId })),
   appendMessage: vi.fn(),
   getConversation: vi.fn(),
@@ -43,6 +44,13 @@ describe("support tRPC API contract", () => {
     await expect(caller.support.kpi({ period: "7d" })).resolves.toMatchObject({ totalCases: 2, handoffRate: 0.5, resolutionRate: 0.5 });
     expect(mocks.addAgentReply).toHaveBeenCalledWith({ ticketNo: "CS-CONTRACT", content: "客服已接手處理。", actorUserId: 1 });
     expect(mocks.updateTicketStatus).toHaveBeenCalledWith({ ticketNo: "CS-CONTRACT", status: "resolved", note: "已完成處理", actorUserId: 1 });
+  });
+
+  it("allows admins to open a full conversation detail and handles missing cases", async () => {
+    const caller = appRouter.createCaller(makeContext("admin"));
+    await expect(caller.support.conversationDetail({ conversationPublicId: "conv_contract" })).resolves.toMatchObject({ conversation: { publicId: "conv_contract" }, messages: [] });
+    await expect(caller.support.conversationDetail({ conversationPublicId: "missing" })).resolves.toBeUndefined();
+    expect(mocks.getConversationDetail).toHaveBeenCalledWith("conv_contract");
   });
 
   it("surfaces service errors instead of pretending the operation succeeded", async () => {
