@@ -45,3 +45,25 @@
 
 - [x] 修正文檔：明確區分目前匯入按鈕只載入 KB 工作表與內建結構化資料的完整範圍
 - [x] 補上文件一致性檢查清單，驗證匯入流程與 README／技術總覽描述一致
+
+- [x] 加入品牌語氣設定 demo：專業、親切、精簡三種風格
+- [x] 加入多語言回答 demo：繁體中文、English、日本語
+- [x] 同一問題切換語氣／語言時保留相同意圖、來源、Rules 與信心
+- [x] 顯示 AI 身份透明提示與可轉人工入口
+- [x] 新增品牌語氣與多語言 demo 的 Vitest 測試
+- [x] 驗證桌面／手機版 demo 並建立新的 checkpoint
+
+- [x] 修正手機版隱藏語氣／多語言 Demo 入口，確保窄螢幕也能開啟示範
+
+- [x] 將語氣／語言 demo 改為讀取實際案件 state，顯示 live intent、source、rules 與 confidence
+- [x] 在 demo 視窗加入可操作的轉人工入口，沿用既有工單預覽流程
+- [x] 補測 demo 切換語氣／語言不改變案件判斷欄位
+- [x] 拍攝已開啟 demo 視窗的桌面與手機版畫面並建立新 checkpoint
+
+- [x] 新增 demo view model，讓語氣／語言切換共用同一筆 live case state
+- [x] 補測所有語氣／語言切換後 intent、source、rules、confidence、route 與缺漏欄位不變
+- [x] 支援以 demo query 開啟 modal，並拍攝已開啟 demo 的桌面與手機版畫面
+- [x] 保存本次 demo 修正版 checkpoint
+
+- [x] 針對 getDemoViewModel 遍歷所有語言／語氣組合，斷言案件欄位完全不變
+- [ ] 完成包含 live state、demo query 與人工轉接入口的最新 checkpoint
