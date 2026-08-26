@@ -111,3 +111,53 @@
 - [x] 保存包含完整 KPI 儀表板與 current mapping 測試的新 checkpoint
 
 - [x] 保存新的 checkpoint，明確包含 KPI 儀表板、dashboard query、趨勢、案件摘要、toCurrentCaseMetric 與驗證文件
+
+- [x] 定義正式對話、訊息、工單、回覆與結案資料模型
+- [x] 以資料庫持久化真實客服對話與 AI／真人回覆時間
+- [x] 建立案件建立、人工轉接、狀態更新與結案的伺服器端 API
+- [x] 建立由資料庫計算平均首次回應時間、人工轉接率與案件解決率的 KPI API
+- [x] 移除營運儀表板對 demoCaseMetrics 的依賴，改讀取正式 KPI 資料
+- [x] 加入管理者權限與空資料／資料不足狀態
+- [x] 補寫正式資料流程、KPI 聚合與權限的 Vitest 測試
+- [x] 驗證真實客服流程、儀表板、TypeScript、建置與部署前 checkpoint
+
+- [x] 建立正式 conversation、message、ticket、ticket_event 與 reply timing 資料模型
+- [x] 真實保存客戶訊息、AI 回覆、客服回覆、來源通路與時間戳
+- [x] 建立建立工單、查詢工單列表、查看工單詳細內容與更新工單狀態 API
+- [x] 將「開啟人工轉接工單」改為真正寫入資料庫而非僅顯示提示
+- [x] 在客服介面加入工單佇列與工單詳細檢視
+- [x] 改善 AI 多輪對話：當前問題優先、只保留相關上下文、避免重複與跳針
+- [x] 改善繁體中文客服語氣、回答結構、同理與下一步引導
+- [x] 對 AI 回答加入知識依據、信心、Rules 與上下文一致性攔截
+- [x] 將 KPI 儀表板改為讀取正式資料庫聚合，不再依賴 demoCaseMetrics
+- [x] 加入正式資料流程、工單 API、AI 回答與權限的 Vitest 測試
+- [x] 執行 schema migration、測試、建置、桌面／手機版驗證並建立正式 checkpoint
+
+- [x] 更新 README 與技術總覽，明確說明正式資料庫工單與 KPI API 的使用方式及權限
+- [x] 加入正式資料流程、工單 API、AI 回答與權限的錯誤狀態測試說明
+- [x] 以預覽驗證正式工單中心與資料庫 KPI 空資料狀態
+- [x] 建立正式化版本 checkpoint，並明確標示仍需設定管理者帳號與外部通路 API
+
+- [x] 加入正式 recordMessage API，讓 LLM 暫時失敗時的規則 fallback 回覆仍保存到案件
+- [x] 在前端明確提示目前回覆是否已寫入正式案件，避免靜默退回本地模式
+
+- [x] 支援以 `?tickets=1` 直接開啟正式工單中心，方便管理者驗證
+- [x] 補拍正式客服工作臺與工單中心畫面，確認空資料狀態與權限提示清楚
+- [x] 更新 docs/index.md，加入正式資料庫與工單中心閱讀入口
+
+- [x] 新增並執行 supportDb／support API／KPI／權限相關 Vitest，讓正式資料流程有可驗證測試
+- [x] 補上真人客服回覆流程，讓 agent 訊息能透過 UI 或明確 API 寫入資料庫
+- [x] 修正來源通路資料，避免 UI 顯示 LINE 但資料庫固定寫 web
+- [x] 實作可檢查的前端權限提示與工單／KPI 空資料提示
+- [x] 加入 deterministic 的回答一致性與 guardrail 攔截，不只依賴 LLM prompt
+- [x] 建立正式化 checkpoint 並在 checkpoint 前完成所有測試與視覺驗證
+
+- [x] 新增 supportDb 與正式工單／KPI tRPC API 的直接測試，覆蓋 createConversation、createTicket、agentReply、kpi 聚合與錯誤分支
+- [x] 在 KPI 儀表板加入可檢查的非 admin 權限提示與「目前尚無案件資料」空資料提示
+- [x] 保存包含真人客服回覆、通路來源、deterministic guardrail、權限／空狀態修補的新 checkpoint
+
+- [x] 新增正式客服 API contract 測試，直接覆蓋 createConversation、createTicket、agentReply、updateTicketStatus、kpi 的成功與錯誤分支
+- [x] 若無法在測試環境執行真 DB，抽出 service／pure function 或 mock caller 驗證 API 契約
+- [x] 保存明確包含真人客服回覆、來源通路、deterministic guardrail、KPI 權限／空資料提示的新 checkpoint
+
+- [ ] 保存新的 checkpoint，明確包含真人客服回覆、來源通路選擇、deterministic guardrail、KPI 權限／空資料提示與最新 API contract 測試

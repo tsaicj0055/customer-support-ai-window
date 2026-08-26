@@ -83,3 +83,18 @@ server/*.test.ts           # 測試
 ## References
 
 [1]: https://developers.google.com/opal "Google for Developers — Opal"
+
+
+## 正式營運資料層（目前已建立）
+
+本專案已建立正式客服資料表：`support_conversations` 保存對話來源、意圖、摘要、狀態與首次回應時間；`support_messages` 保存客戶、AI、真人客服與系統訊息；`support_tickets` 保存工單內容、缺漏欄位、轉接原因與狀態；`support_ticket_events` 保存建立及狀態變更事件。這些資料表已透過 migration 套用至專案資料庫。
+
+`server/supportDb.ts` 是資料存取層，集中處理對話建立、訊息寫入、工單建立／查詢／狀態更新與 KPI 聚合。`server/routers.ts` 提供 `createConversation`、`reply`、`recordMessage`、`createTicket`、`ticketList`、`ticketDetail`、`updateTicketStatus` 與 `kpi`。管理者查詢工單與 KPI 時，使用 `adminProcedure` 驗證權限；客服對話和建立工單則可以由公開客服流程建立，但正式環境仍應依企業身份與通路規則進一步收緊權限。
+
+KPI 不再從 `demoCaseMetrics` 讀取。平均首次回應時間由第一則客戶訊息到第一則 AI／真人回覆的實際時間戳計算；人工轉接率由存在工單的案件數計算；案件解決率由 conversation 或 ticket 的 resolved／closed 狀態計算。沒有資料時顯示空值，不會產生假數字。
+
+## 回答可靠性與 fallback
+
+AI 回答現在將目前客戶問題置於最高優先，歷史內容只保留相關客戶訊息；伺服器端提示禁止重複上一輪答案、禁止臆測知識庫不存在的內容，並要求以同理／結論、處理方式與一個下一步組成回答。若 LLM 暫時不可用，前端會使用本地 RAG／Rules fallback，並透過 `recordMessage` 將 fallback 回覆保存至同一個正式案件；若保存失敗，介面會明確提示客服，而不是靜默假裝已完成保存。
+
+目前本專案已具備正式資料庫與單一工單中心，但尚未接入 LINE、Messenger、Instagram、WhatsApp 或 CRM／Helpdesk。多通路整合仍需官方 Webhook、API 權限、身份合併、事件去重與伺服器端 Secrets。

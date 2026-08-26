@@ -112,3 +112,12 @@ docs/index.md                     # 文件導覽
 ## References
 
 [1]: https://developers.google.com/opal "Google for Developers — Opal"
+
+
+## 正式營運資料與工單中心
+
+目前版本已建立正式客服資料表：`support_conversations` 保存案件與對話狀態，`support_messages` 保存客戶、AI、真人客服與系統訊息，`support_tickets` 保存正式工單，`support_ticket_events` 保存工單狀態事件。人工轉接不再只是前端草稿；客服按下建立工單後，系統會保存摘要、轉接原因、已知與缺少欄位，並可在「正式工單中心」查看列表與完整對話。
+
+客服 API 包含 `support.createConversation`、`support.reply` 與 `support.createTicket`；管理者 API 包含 `support.ticketList`、`support.ticketDetail`、`support.updateTicketStatus` 與 `support.kpi`。工單列表、工單詳細內容與 KPI 儀表板需要管理者權限；未登入或非管理者會看到權限提示，不會讀取管理資料。KPI 的今日、近 7 日與目前案件範圍由資料庫訊息時間戳和案件狀態計算，無資料時顯示空值，不填入示範數字。
+
+目前尚未接入 LINE、Messenger、Instagram、WhatsApp 或正式 CRM／Helpdesk。要進行外部整合，需另外設定官方 Webhook、API 權限、伺服器端 Secrets、身份合併策略與事件去重。

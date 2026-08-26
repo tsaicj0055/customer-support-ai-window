@@ -25,4 +25,59 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+export const supportConversations = mysqlTable("support_conversations", {
+  id: int("id").autoincrement().primaryKey(),
+  publicId: varchar("publicId", { length: 64 }).notNull().unique(),
+  channel: varchar("channel", { length: 32 }).default("web").notNull(),
+  customerName: varchar("customerName", { length: 160 }),
+  status: mysqlEnum("status", ["open", "pending", "resolved", "closed"]).default("open").notNull(),
+  intent: varchar("intent", { length: 160 }),
+  summary: text("summary"),
+  firstResponseAt: timestamp("firstResponseAt"),
+  resolvedAt: timestamp("resolvedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const supportMessages = mysqlTable("support_messages", {
+  id: int("id").autoincrement().primaryKey(),
+  conversationId: int("conversationId").notNull(),
+  role: mysqlEnum("role", ["customer", "assistant", "agent", "system"]).notNull(),
+  content: text("content").notNull(),
+  channelMessageId: varchar("channelMessageId", { length: 160 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  responderUserId: int("responderUserId"),
+});
+
+export const supportTickets = mysqlTable("support_tickets", {
+  id: int("id").autoincrement().primaryKey(),
+  ticketNo: varchar("ticketNo", { length: 32 }).notNull().unique(),
+  conversationId: int("conversationId").notNull(),
+  status: mysqlEnum("status", ["open", "in_progress", "resolved", "closed"]).default("open").notNull(),
+  reason: varchar("reason", { length: 255 }).notNull(),
+  summary: text("summary").notNull(),
+  missingFields: text("missingFields"),
+  createdBy: int("createdBy"),
+  assignedTo: int("assignedTo"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  resolvedAt: timestamp("resolvedAt"),
+});
+
+export const supportTicketEvents = mysqlTable("support_ticket_events", {
+  id: int("id").autoincrement().primaryKey(),
+  ticketId: int("ticketId").notNull(),
+  eventType: varchar("eventType", { length: 64 }).notNull(),
+  note: text("note"),
+  actorUserId: int("actorUserId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SupportConversation = typeof supportConversations.$inferSelect;
+export type InsertSupportConversation = typeof supportConversations.$inferInsert;
+export type SupportMessage = typeof supportMessages.$inferSelect;
+export type InsertSupportMessage = typeof supportMessages.$inferInsert;
+export type SupportTicket = typeof supportTickets.$inferSelect;
+export type InsertSupportTicket = typeof supportTickets.$inferInsert;
+export type SupportTicketEvent = typeof supportTicketEvents.$inferSelect;
+export type InsertSupportTicketEvent = typeof supportTicketEvents.$inferInsert;

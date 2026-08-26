@@ -28,3 +28,21 @@
 ## References
 
 [1]: https://developers.google.com/opal "Google for Developers — Opal"
+
+
+## 正式營運功能
+
+目前專案已從前端示範資料升級為可保存真實案件的版本。對話與回覆資料會寫入資料庫，人工轉接會產生正式工單，管理者可從工單中心查看工單列表、摘要、缺漏欄位、狀態事件與完整對話；客服營運儀表板則從資料庫計算平均首次回應時間、人工轉接率與案件解決率。
+
+相關閱讀入口如下：
+
+| 主題 | 文件／程式 | 說明 |
+|---|---|---|
+| 資料表與 migration | `drizzle/schema.ts`、`drizzle/migrations/` | 對話、訊息、工單與事件資料模型 |
+| 資料存取 | `server/supportDb.ts` | 正式寫入、查詢、狀態更新與 KPI 聚合 |
+| 客服 API | `server/routers.ts` | 對話、回覆、fallback 保存、工單與 KPI tRPC 程序 |
+| 工單中心 | `client/src/pages/Home.tsx` | 管理者工單列表與詳細對話檢視 |
+| KPI 儀表板 | `client/src/lib/kpiMetrics.ts`、`server/supportDb.ts` | 原型指標計算與正式資料庫聚合的邊界 |
+| 視覺驗證 | `docs/kpi-dashboard-verification.md` | 桌面與手機版 KPI 儀表板驗證記錄 |
+
+正式功能仍需由具備管理者角色的帳號查看管理資料；LINE、Messenger、Instagram、WhatsApp 與 CRM／Helpdesk 尚未接入，需另行完成官方 API、Webhook、Secrets 與身份合併設定。
