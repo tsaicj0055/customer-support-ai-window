@@ -110,4 +110,4 @@
 - [x] 抽出 current KPI case mapping 函式，直接測試 needsHuman／resolutionType 到 handoff／resolved 的映射
 - [x] 保存包含完整 KPI 儀表板與 current mapping 測試的新 checkpoint
 
-- [ ] 保存新的 checkpoint，明確包含 KPI 儀表板、dashboard query、趨勢、案件摘要、toCurrentCaseMetric 與驗證文件
+- [x] 保存新的 checkpoint，明確包含 KPI 儀表板、dashboard query、趨勢、案件摘要、toCurrentCaseMetric 與驗證文件
