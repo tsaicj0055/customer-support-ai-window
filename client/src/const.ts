@@ -13,6 +13,13 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 // with "invalid oauth state". It returns void by design, so there is no URL to
 // stash across renders.
 export const startLogin = () => {
+  const apiOrigin = import.meta.env.VITE_API_ORIGIN?.replace(/\/$/, "") ?? "";
+  if (apiOrigin && new URL(apiOrigin).origin !== window.location.origin) {
+    // GitHub Pages cannot receive the Manus OAuth callback or reliably share
+    // the Manus session cookie. Complete authentication on the full-stack app.
+    window.location.href = `${apiOrigin}/?login=1`;
+    return;
+  }
   const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
   const appId = import.meta.env.VITE_APP_ID;
   const redirectUri = `${window.location.origin}/api/oauth/callback`;

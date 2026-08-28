@@ -152,7 +152,10 @@ function vitePluginManusDebugCollector(): Plugin {
 
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
+const isGitHubPagesBuild = process.env.GITHUB_PAGES === "true";
+
 export default defineConfig({
+  base: isGitHubPagesBuild ? "/customer-support-ai-window/" : "/",
   plugins,
   resolve: {
     alias: {

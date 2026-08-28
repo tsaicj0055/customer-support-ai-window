@@ -121,3 +121,19 @@ docs/index.md                     # 文件導覽
 客服 API 包含 `support.createConversation`、`support.reply` 與 `support.createTicket`；管理者 API 包含 `support.ticketList`、`support.ticketDetail`、`support.updateTicketStatus` 與 `support.kpi`。工單列表、工單詳細內容與 KPI 儀表板需要管理者權限；未登入或非管理者會看到權限提示，不會讀取管理資料。KPI 的今日、近 7 日與目前案件範圍由資料庫訊息時間戳和案件狀態計算，無資料時顯示空值，不填入示範數字。
 
 目前尚未接入 LINE、Messenger、Instagram、WhatsApp 或正式 CRM／Helpdesk。要進行外部整合，需另外設定官方 Webhook、API 權限、伺服器端 Secrets、身份合併策略與事件去重。
+
+## GitHub Pages 前端展示
+
+本專案提供 GitHub Actions workflow，可將與 Manus 正式部署相同的 React 客服工作臺前端發布到 GitHub Pages：
+
+`https://tsaicj0055.github.io/customer-support-ai-window/`
+
+GitHub Pages 使用 `/customer-support-ai-window/` 子路徑建置，並將 tRPC API 指向 Manus 正式服務 `https://supportai-tlg8ey7z.manus.space`。因此 GitHub Pages 可呈現相同的客服工作臺介面，也能呼叫公開客服流程；管理者登入、正式工單中心、KPI 與帳號管理仍以 Manus 正式網域作為主要執行環境，因為 GitHub Pages 本身不執行 Express、資料庫或 OAuth callback。
+
+首次啟用時，請到 GitHub repository 的 **Settings → Pages**，將 **Source** 設為 **GitHub Actions**。之後每次推送到 `main`，`.github/workflows/deploy-pages.yml` 會重新建置並發布前端。API endpoint 是公開網址設定，不包含任何 API key；資料庫密碼、JWT secret、OAuth secret 與 server-side AI key 均不會放入 GitHub Pages 或 repository。
+
+### 自訂網域設定
+
+若要讓完整 AI 客服使用自己的品牌網址，建議把自訂網域綁定到 **Manus**，例如將 `support.yourbrand.com` 指向 Manus 正式部署；這樣 Express API、資料庫、OAuth、工單與 KPI 都在同一個正式環境中運作。請在 Manus **Settings → Domains** 取得 DNS 設定，再到網域註冊商新增 Manus 指定的 `CNAME` 或 `A` record。
+
+若只想做靜態產品介紹頁，也可以把 `www.yourbrand.com` 綁定到 GitHub Pages，並依 GitHub Pages 顯示的指示新增 `CNAME` 記錄。GitHub Pages 的自訂網域只會服務靜態前端，不會取代 Manus 的 backend；完整客服功能仍應使用 Manus 網域或將 API 指向 Manus。不要把資料庫連線字串、OAuth secret 或 AI API key 放入 GitHub Pages。

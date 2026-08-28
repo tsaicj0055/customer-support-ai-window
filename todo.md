@@ -195,3 +195,14 @@
 - [x] 在案件詳細視窗內直接提供真人客服回覆與工單狀態更新控制
 - [x] 補寫 KPI 案件樣本點擊開啟詳情的互動測試，並補拍桌面／手機版案件詳細視窗畫面
 - [x] 完成上述驗證後再建立並保存新的 checkpoint
+
+- [x] 評估 GitHub Pages 顯示與 Manus 正式部署一致前端的可行性與限制
+- [x] 建立 GitHub Pages 專用 production build／部署流程，正確處理 base path
+- [x] 確認 GitHub Pages 前端可安全連接 Manus 正式 API，且不暴露 secrets
+- [ ] 驗證 GitHub Pages 預覽畫面與正式部署畫面一致
+- [x] 更新 README 說明 GitHub Pages、Manus backend 與自訂網域的使用方式
+- [ ] 保存 GitHub Pages 同步版本 checkpoint
+
+- [ ] 讓 GitHub Pages 的登入操作安全導向 Manus 正式網域，避免不存在的 GitHub Pages OAuth callback
+- [ ] 補做 GitHub Pages 公開 API 跨網域驗證，確認 conversation／ticket 公開流程可用
+- [ ] 補充自訂網域應綁定 Manus 或 GitHub Pages 的具體設定說明
