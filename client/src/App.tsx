@@ -7,9 +7,12 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
+  // GitHub Pages serves the app below the repository name, while Manus serves it at root.
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
   return (
     <Switch>
+      <Route path={basePath} component={Home} />
+      {basePath !== "/" && <Route path={`${basePath}/`} component={Home} />}
       <Route path={"/"} component={Home} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
