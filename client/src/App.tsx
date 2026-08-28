@@ -1,4 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
+import { useEffect } from "react";
+import { startLogin } from "@/const";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
@@ -26,6 +29,20 @@ function Router() {
 //   to keep consistent foreground/background color across components
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
+function LoginBootstrap() {
+  const { user, loading } = useAuth();
+  useEffect(() => {
+    if (loading || user || typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("login") !== "1") return;
+    params.delete("login");
+    const nextPath = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}`;
+    window.history.replaceState({}, "", nextPath);
+    startLogin();
+  }, [loading, user]);
+  return null;
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -35,6 +52,7 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
+          <LoginBootstrap />
           <Router />
         </TooltipProvider>
       </ThemeProvider>

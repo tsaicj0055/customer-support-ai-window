@@ -137,3 +137,7 @@ GitHub Pages 使用 `/customer-support-ai-window/` 子路徑建置，並將 tRPC
 若要讓完整 AI 客服使用自己的品牌網址，建議把自訂網域綁定到 **Manus**，例如將 `support.yourbrand.com` 指向 Manus 正式部署；這樣 Express API、資料庫、OAuth、工單與 KPI 都在同一個正式環境中運作。請在 Manus **Settings → Domains** 取得 DNS 設定，再到網域註冊商新增 Manus 指定的 `CNAME` 或 `A` record。
 
 若只想做靜態產品介紹頁，也可以把 `www.yourbrand.com` 綁定到 GitHub Pages，並依 GitHub Pages 顯示的指示新增 `CNAME` 記錄。GitHub Pages 的自訂網域只會服務靜態前端，不會取代 Manus 的 backend；完整客服功能仍應使用 Manus 網域或將 API 指向 Manus。不要把資料庫連線字串、OAuth secret 或 AI API key 放入 GitHub Pages。
+
+### GitHub Pages 的登入與公開客服流程
+
+GitHub Pages 前端可載入客服工作臺並透過受限 CORS 呼叫 Manus 的公開客服 procedures，例如建立 conversation、保存客服訊息與建立人工轉接資料；這些公開資料會寫入 Manus 正式資料庫。由於 GitHub Pages 不提供 Manus OAuth callback，使用者從 Pages 開啟需要管理者權限的儀表板、工單中心或帳號管理時，系統會導向 Manus 正式網域完成登入。登入後的管理操作以 Manus 網域為準，避免跨站 cookie 與 OAuth callback 造成不安全或不穩定的 session。
