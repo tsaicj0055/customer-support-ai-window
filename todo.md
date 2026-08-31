@@ -206,3 +206,7 @@
 - [x] 讓 GitHub Pages 的登入操作安全導向 Manus 正式網域，避免不存在的 GitHub Pages OAuth callback
 - [x] 補做 GitHub Pages 公開 API 跨網域驗證，確認 conversation／ticket 公開流程可用
 - [x] 補充自訂網域應綁定 Manus 或 GitHub Pages 的具體設定說明
+- [ ] 保存包含標題更新的 checkpoint，觸發 Manus／GitHub 同步部署
+- [ ] 在 Manus 正式部署與 GitHub Pages 重新驗證標題已顯示為「廣告帳戶諮詢」
+
+- [ ] 將客服視窗標題「Meta 廣告帳戶諮詢」改為「廣告帳戶諮詢」，並完成測試、建置與發布驗證
