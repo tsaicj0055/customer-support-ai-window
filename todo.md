@@ -210,3 +210,11 @@
 - [x] 在 Manus 正式部署與 GitHub Pages 重新驗證標題已顯示為「廣告帳戶諮詢」
 
 - [x] 將客服視窗標題「Meta 廣告帳戶諮詢」改為「廣告帳戶諮詢」，並完成測試、建置與發布驗證
+
+- [x] 診斷 GitHub Pages 未顯示最新標題的 commit、Actions、artifact 與快取狀態
+- [x] 修正 GitHub Pages 版本同步或資產快取問題
+- [x] 重新驗證 GitHub Pages 與 Manus 正式部署均顯示「廣告帳戶諮詢」
+
+- [ ] 在 README 補充 GitHub Pages hard refresh 與 cache-bust 驗證步驟
+- [ ] 在前端顯示可辨識的建置版本，協助比較 Manus 與 GitHub Pages 是否為同一版本
+- [ ] 保存版本識別修正版 checkpoint，並重新驗證兩個公開網址

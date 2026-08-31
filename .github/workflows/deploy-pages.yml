@@ -37,6 +37,7 @@ jobs:
         env:
           GITHUB_PAGES: "true"
           VITE_API_ORIGIN: https://supportai-tlg8ey7z.manus.space
+          VITE_BUILD_VERSION: ${{ github.sha }}
         run: pnpm exec vite build
 
       - name: Upload Pages artifact

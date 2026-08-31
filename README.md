@@ -141,3 +141,10 @@ GitHub Pages 使用 `/customer-support-ai-window/` 子路徑建置，並將 tRPC
 ### GitHub Pages 的登入與公開客服流程
 
 GitHub Pages 前端可載入客服工作臺並透過受限 CORS 呼叫 Manus 的公開客服 procedures，例如建立 conversation、保存客服訊息與建立人工轉接資料；這些公開資料會寫入 Manus 正式資料庫。由於 GitHub Pages 不提供 Manus OAuth callback，使用者從 Pages 開啟需要管理者權限的儀表板、工單中心或帳號管理時，系統會導向 Manus 正式網域完成登入。登入後的管理操作以 Manus 網域為準，避免跨站 cookie 與 OAuth callback 造成不安全或不穩定的 session。
+
+
+### GitHub Pages 更新驗證與快取處理
+
+GitHub Pages 使用 GitHub Actions 建置，頁面資產會以 hash 檔名發布。更新後請先確認 repository 的 **Actions → Deploy frontend to GitHub Pages** 顯示成功，再使用無痕視窗或強制重新整理：Windows／Linux 使用 `Ctrl + Shift + R`，macOS 使用 `Command + Shift + R`。也可以在網址後加入一次性的查詢參數，例如 `?cachebust=20260831`，確認是否已取得新的 HTML 與資產。
+
+客服工作臺左側的「RAG + Rules Guardrail」區塊會顯示「前端版本」。GitHub Pages 顯示的是該次 GitHub Actions 的 commit short hash；若仍看不到最新標題或版本，請等待 CDN 快取更新後再次重新整理。Manus 正式環境與 GitHub Pages 的管理登入仍應以 Manus 網域為準。
